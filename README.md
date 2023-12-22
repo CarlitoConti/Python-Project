@@ -34,8 +34,8 @@ Replace "insert your api key" and "insert your api secret" with the API key and 
 #create a session to Bybit Exchange, manually create api keys 
 session = HTTP(
     testnet=False,
-    api_key="4DSbiiGMmtbvtQS08N",
-    api_secret="bJuPOE1dQ8z4WCmyKYNYuxs0RjzeNCgJp8vS",
+    api_key="insert your api key",
+    api_secret="insert your secret key",
 )
 ```
 
@@ -44,7 +44,7 @@ session = HTTP(
 ```py
 #create a discord channel and setup a discord webhook, retrieve the link and past it here
 
-discordurl = "https://discord.com/api/webhooks/1162735444795084920/72JbBo2thRXjbF6yDhYKE6ARcrzhusjEUdtkoYOp0WLRumJum3WBY3U1NOwzhMSn-Wsj" 
+discordurl = "insert your discord webhook" 
 
 webhook = DiscordWebhook(url=discordurl)
 ```
