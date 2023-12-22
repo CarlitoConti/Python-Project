@@ -79,7 +79,7 @@ previous_data = set()
 ```
 
 This code defines a function named fetch_data() and initializes a variable previous_data as an empty set.
-1.	fetch_data() Function:
+### 1.	fetch_data() Function:
  
 a.	The fetch_data() function is responsible for making an HTTP GET request to a specified api_url using the requests library.
 
@@ -89,7 +89,7 @@ c.	If the response status is a success (HTTP status code 200), it retrieves the 
 
 d.	If an exception of type requests.exceptions.RequestException occurs during the HTTP request (e.g., network issue, timeout, etc.), it catches the exception, prints an error message indicating the issue encountered while fetching data from the API (Error fetching data from the API: {error_message}), and returns None to signify an unsuccessful data retrieval.
 
-2.	previous_data Variable:
+### 2.	previous_data Variable:
 
 a.	previous_data is initialized as an empty set (set()). It's used to store the previously fetched data or tickers.
 Overall, this code snippet sets up a function to retrieve data from a specified API URL using the requests library and initializes an empty set to store previously fetched data for later comparison, likely to track changes or new additions in the fetched data over time.
@@ -270,16 +270,27 @@ The code does not liquidate the positions, therefore it is necessary for the use
 
 # Rationale and results
 
-The reasons behind this program lie behind some of our observations.
-Additionally, we've observed a distinction between Bybit spot and futures listings. While spot listings are usually pre-announced, futures listings, particularly in recent months, are often revealed just moments after the trading pair goes live. Recognizing this timing difference, we have chosen to focus on monitoring the launch of new trading pairs and capitalizing on the brief bullish phase immediately following the announcement. Within a few minutes of the announcement, we promptly close our position to seize the potential gains.
+We developed this program based on our observations. Unlike spot listings on Bybit, which are typically announced beforehand, we observed that futures listings, especially in recent months, are announced shortly after the trading pair becomes active. So, we chose to monitor new trading pairs as they go live and take advantage of this brief bullish phase. After a few minutes following the announcement, we manally close our position. Our strategy is to capitalize on the quick upward movement in prices for speculation.
 
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/ae6ea40f-e78c-4ab6-aa8e-c3d3ad397ed1)
 
-As you can see in the three charts above, thanks to this code we made more than 450 USD as net profit by investing only 500 USD. This means a total return of 90%.
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/688508d5-a7d5-42a7-bb33-0e428e0427e6)
+
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/a4ae72fc-b99d-4a96-b1fb-11ddb0d7c8a0)
+
+As you can see in the three charts above, thanks to this code we made more than 450 USD as net profit by investing only 500 USD. 
+
+### This means a total return of 90% in less than 1 month
 
 Secondly, we found and reported a bug on the Bybit system. 
+We discovered a glitch in Bybit's system that allowed us to trade a specific asset before it officially started trading. The issue, shown in the attached screenshot, seemed to be linked to a possible error in Bybit's API. We reported the problem to the exchange, and they appreciated our effort. They confirmed the bug and let us know that it's now fixed.
 
-Bla bla
 
+
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/8d8edc4b-2edd-4e03-b010-6431337b1198)
+
+
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/52fb7606-70de-4d68-a8dd-4f44e115b2bf)
 
 
 
