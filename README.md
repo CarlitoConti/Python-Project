@@ -55,42 +55,102 @@ Replace "insert your discord webhook" with the actual Discord webhook URL you ob
 ## How it works
 
 ## A.  Function for getting data
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/a81a9f70-305a-4102-9729-5fb3abf74c1b)
 
 After fulfilling all the requirements, the code fetches the data from the Bybit API. 
 Once all prerequisites are met, the code retrieves information from the Bybit API, specifically focusing on newly listed futures tickers. The script exclusively considers the addition of new cryptocurrencies within the derivatives section.
 Indeed, when a new cryptocurrency is listed in Bybit, a new ticker is assigned and all crypto’s information is embedded in the above API. Therefore, we use it to get the data.
 
- 
+ ```py
+#function to make request to Bybit's API
+def fetch_data():
+    
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        return response.json()
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data from the API: {e}")
+        return None
+
+#define previous data as a set
+previous_data = set()   
+```
+
 This code defines a function named fetch_data() and initializes a variable previous_data as an empty set.
 1.	fetch_data() Function:
+ 
 a.	The fetch_data() function is responsible for making an HTTP GET request to a specified api_url using the requests library.
+
 b.	Inside a try-except block, it sends a GET request to the provided api_url using requests.get().
+
 c.	If the response status is a success (HTTP status code 200), it retrieves the JSON content of the response using response.json() and returns it.
+
 d.	If an exception of type requests.exceptions.RequestException occurs during the HTTP request (e.g., network issue, timeout, etc.), it catches the exception, prints an error message indicating the issue encountered while fetching data from the API (Error fetching data from the API: {error_message}), and returns None to signify an unsuccessful data retrieval.
+
 2.	previous_data Variable:
+
 a.	previous_data is initialized as an empty set (set()). It's used to store the previously fetched data or tickers.
 Overall, this code snippet sets up a function to retrieve data from a specified API URL using the requests library and initializes an empty set to store previously fetched data for later comparison, likely to track changes or new additions in the fetched data over time.
 
-B.  Request of Data
+## B.  Request of Data
+```py
+#make request every half a second to the API and compare the retrieved data with the data of the previous request
+#If there's no change then keep running into the while otherwise send a buy order of the new ticker to the exchange
+while True:
+    
+    data = fetch_data()
+    
+    if data and "result" in data and "list" in data["result"]:
+        
+        #add every ticker to the current data set
+        current_data = {item["symbol"] for item in data["result"]["list"]}  
+        
+        #spot if there's a new ticker
+        new_tickers = current_data - previous_data      
+
+        if new_tickers:
+            
+            #this first if is for the first time the script is ran
+            if len(new_tickers) >= 2: 
+              
+                print("List has been loaded") 
+```
  
 1.	while True:: Initiates an infinite loop, ensuring continuous execution of the code block it contains.
+
 2.	data = fetch_data(): Calls the fetch_data() function defined earlier to retrieve data from an API endpoint. This function is expected to return JSON data.
+
 3.	if data and "result" in data and "list" in data["result"]:
+
 a.	Checks if the data variable has content, and if it has the required structure.
+
 b.	Specifically, it ensures that the data dictionary has a key named "result", which in turn has a key named "list". This structure allows the code to access a list of items (presumably ticker symbols) inside the fetched data.
+
 4.	current_data = {item["symbol"] for item in data["result"]["list"]}:
+
 a.	Constructs a set (current_data) containing the symbols of items retrieved from the fetched data's "list" field. Each item in this set represents a ticker symbol.
+
 5.	new_tickers = current_data - previous_data:
+
 a.	Compares the current set of ticker symbols (current_data) with the set of previously fetched ticker symbols (previous_data).
+
 b.	Calculates the difference between the current set and the previous set, storing any new ticker symbols in the new_tickers set.
+
 6.	if new_tickers:
+
 a.	Enters this block if there are new ticker symbols detected (i.e., if the new_tickers set is not empty).
+
 7.	if len(new_tickers) >= 2:
+
 a.	Within the block for detecting new tickers, it checks if the number of new tickers detected is greater than or equal to 2.
+
 b.	If at least two new tickers are detected, it prints "List has been loaded". This could be a marker to signify a specific condition or event based on the number of new tickers.
+
 Overall, this portion of the code continuously fetches data from an API endpoint, checks for the presence of new ticker symbols, and performs different actions based on the number of new tickers detected, with a specific condition set for when two or more new tickers are detected.
 
-C. New tickers detection and placing of the order
+## C. New tickers detection and placing of the order
 
  
 
