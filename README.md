@@ -52,7 +52,7 @@ Replace "insert your discord webhook" with the actual Discord webhook URL you ob
 
 
 
-## How it works
+# How it works
 
 ## A.  Function for getting data
 ![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/a81a9f70-305a-4102-9729-5fb3abf74c1b)
@@ -152,50 +152,123 @@ Overall, this portion of the code continuously fetches data from an API endpoint
 
 ## C. New tickers detection and placing of the order
 
- 
+ ```py
+ else: 
+                print(f"New tickers detected: {', '.join(new_tickers)}")
+                
+                #send a webhook to let us know a new ticker has been detected
+                embed = DiscordEmbed(title="New Ticker {} detected! ".format("".join(new_tickers)), description="https://www.bybit.com/trade/usdt/{}".format(",".join(new_tickers)), color="03b2f8")
+                webhook.add_embed(embed) 
+                response = webhook.execute()
+                
+                we = ','.join(new_tickers)
+                
+                #fetch last price of the token to determine quantity based on amount we want to buy
+                last_price = [symbol['lastPrice'] for symbol in data['result']['list'] if symbol['symbol'] == we][0]  
+                quantity = 200 / float(last_price)
+
+                #try to place an order and send a webhook of confirmation otherwise return an error
+                try: 
+                    order = session.place_order(
+                        category='linear',
+                        symbol=','.join(new_tickers),
+                        orderType='Market',
+                        side='Buy',
+                        qty= round(quantity)
+                    )
+
+                    weborder = DiscordWebhook(url=discordurl, content="Successfully Placed Order!")
+                    response = weborder.execute()
+
+                except:     
+
+                    weberror = DiscordWebhook(url=discordurl, content="Error! Go to Console for details")
+                    response = weberror.execute()
+```
 
 This part of the code is responsible for executing actions when new ticker symbols are detected, particularly when fewer than two new tickers are found.
+
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/5934b75a-4e45-48cb-87b8-a2f07d5752ab)
+
 1.	else: This block is executed when there are new ticker symbols detected, but the number of new tickers is less than two.
+
 2.	print(f"New tickers detected: {', '.join(new_tickers)}")
+
 a.	It prints a message indicating the newly detected ticker symbols in the console.
+
 3.	Discord Notification:
+
 a.	Constructs a Discord embed message to notify about the new ticker(s) detected.
-i.	Sets the title of the embed message to indicate the detection of new ticker(s).
-ii.	Provides a description containing a link to Bybit's trade platform for the detected ticker(s).
-iii.	Specifies a color for the embed message.
+Sets the title of the embed message to indicate the detection of new ticker(s).
+Provides a description containing a link to Bybit's trade platform for the detected ticker(s).
+Specifies a color for the embed message.
+
 b.	Adds the created embed to the Discord webhook.
+
 c.	Executes the webhook to send the notification to the configured Discord channel.
+![image](https://github.com/CarlitoConti/Python-Project/assets/154532693/e17378eb-b0a8-40df-af91-826c25e7f47e)
+
+
 4.	Price Calculation and Order Placement:
+
 a.	Converts the set of new ticker symbols (new_tickers) into a comma-separated string (we = ','.join(new_tickers)).
+
 b.	Searches for the last price of the new ticker symbol(s) in the fetched data.
+
 c.	Calculates the quantity of the order to place based on a predefined value of 200 divided by the last price of the new ticker(s).
 
 5.	try Block:
+
 a.	Tries to place a market buy order on the Bybit Exchange for the new ticker symbol(s) using the Bybit API (session.place_order()).
+
 b.	The order details include the symbol(s), order type (Market), buy side, and calculated quantity.
+
 6.	except Block:
+
 a.	If there's an exception during the order placement (e.g., API failure, invalid data, etc.), it catches the exception.
+
 b.	Executes a Discord webhook to send an error message notifying about the order placement failure.
+
 This part of the code finalizes the loop and performs necessary actions after processing the fetched data.
 
-D. Finalization
+## D. Finalization
 
+```py
+        else:
+
+            print("No new tickers")
+
+        previous_data = current_data   
+    
+    time.sleep(0.5)
+```
         
 This part of the code finalizes the loop and performs necessary actions after processing the fetched data.
+
 1.	else: (Outside the block checking for new tickers)
+
 a.	This block is executed if no new tickers are detected (i.e., the new_tickers set is empty).
+
 2.	print("No new tickers")
+
 a.	Prints a message in the console indicating that no new ticker symbols were detected in the current data.
+
 3.	previous_data = current_data
+
 a.	Updates the previous_data variable with the current set of ticker symbols (current_data). This is done to store the current data for comparison in the next iteration of the loop. It ensures that in the subsequent loop iteration, the comparison is made against the most recent set of ticker symbols fetched from the API.
+
 4.	time.sleep(0.5)
+
 a.	Pauses the script execution for 0.5 seconds before initiating the next iteration of the loop.
+
 b.	This time.sleep() function call creates a half-second delay before re-executing the loop to fetch data again from the API.
+
 c.	The purpose of this delay is to prevent excessive API requests and control the rate of querying the API to avoid hitting any rate limits or overwhelming the server.
+
 The code does not liquidate the positions, therefore it is necessary for the user to do this independently in Bybit. 
 
 
-Rationale and results
+# Rationale and results
 
 The reasons behind this program lie behind some of our observations.
 Additionally, we've observed a distinction between Bybit spot and futures listings. While spot listings are usually pre-announced, futures listings, particularly in recent months, are often revealed just moments after the trading pair goes live. Recognizing this timing difference, we have chosen to focus on monitoring the launch of new trading pairs and capitalizing on the brief bullish phase immediately following the announcement. Within a few minutes of the announcement, we promptly close our position to seize the potential gains.
