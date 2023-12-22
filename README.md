@@ -10,8 +10,7 @@ This code sets up a continuous loop to check for new tickers from Bybit's API, a
 To run the provided code successfully, you need to fulfill several requirements, including installing specific Python libraries, creating a Bybit account, and generating API keys. Below are the detailed requirements.
 
 1.	Install the required libraries and import them in your environment using the following commands:
-```py
-```
+
 ```py
 import requests
 import json
