@@ -1,4 +1,6 @@
-# Documentation Python Code - Crypto Trading Strategy
+# Documentation Python Code - Crypto Trading Strategy 
+
+Lorenzo De Chiara, Leonardo Bondesan. Jacopo Savini
 
 ## Introduction
 This code sets up a continuous loop to check for new tickers from Bybit's API, and if it detects new tickers,it sends a notification to a user’s Discord channel using a webhook. Additionally, it places a buy order for the new ticker(s) on the Bybit Exchange.
@@ -282,6 +284,7 @@ As you can see in the three charts above, thanks to this code we made more than 
 
 ### This means a total return of 90% in less than 1 month
 
+# Bybit Bug
 Secondly, we found and reported a bug on the Bybit system. 
 We discovered a glitch in Bybit's system that allowed us to trade a specific asset before it officially started trading. The issue, shown in the attached screenshot, seemed to be linked to a possible error in Bybit's API. We reported the problem to the exchange, and they appreciated our effort. They confirmed the bug and let us know that it's now fixed.
 
